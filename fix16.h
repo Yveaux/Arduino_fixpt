@@ -21,6 +21,7 @@ extern "C"
 # endif
 #endif
 
+#include "libfixmath_conf.h"
 #include <stdint.h>
 
 typedef int32_t fix16_t;
