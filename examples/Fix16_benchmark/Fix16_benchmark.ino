@@ -1,12 +1,22 @@
-#include <fix16.h>
+#define NO_DOUBLE
+#define NO_FIX16
+
+#if !defined(NO_DOUBLE) && !defined(NO_FIX16)
 #include <stdio.h>
+#endif
+
+#ifndef NO_FIX16
+#include <fix16.h>
+#endif
+#ifndef NO_DOUBLE
 #include <math.h>
+#endif
 
 #define NUM_RUNS   (5)
 
 #define COMMENT(x) Serial.println(F("\n----" x "----"));
 
-const fix16_t testcases[] = {
+const int32_t testcases[] = {
   // Small numbers
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
   -1, -2, -3, -4, -5, -6, -7, -8, -9, -10,
@@ -105,6 +115,7 @@ template<typename T> void test_subTestcases( void )
   }
 }
 
+#ifndef NO_FIX16
 void test_sqrtTestcasesFix16( void )
 {
   unsigned int i;
@@ -115,7 +126,9 @@ void test_sqrtTestcasesFix16( void )
     f = a.sqrt();
   }
 }
+#endif
 
+#ifndef NO_DOUBLE
 void test_sqrtTestcasesDouble( void )
 {
   unsigned int i;
@@ -126,6 +139,7 @@ void test_sqrtTestcasesDouble( void )
     f = sqrt(a);
   }
 }
+#endif
 
 #define TIMED_EXEC(func,delta,runs)  \
 {                                    \
@@ -137,6 +151,7 @@ void test_sqrtTestcasesDouble( void )
 
 void setup()
 {
+#if !defined(NO_DOUBLE) && !defined(NO_FIX16)
   Serial.begin(115200);
 
   COMMENT("Running testcases for multiplication");
@@ -178,6 +193,24 @@ void setup()
   Serial.print("Sqrt    "); Serial.print(time_doubleSqrt); Serial.print("\t"); Serial.print(time_Fix16Sqrt); Serial.print("\t"); Serial.print(incr_Sqrt); Serial.println("%");
 
   COMMENT("Test finished");
+#endif
+
+#if defined(NO_DOUBLE) && !defined(NO_FIX16)
+  test_multTestcases<Fix16>();
+  test_divTestcases<Fix16>();
+  test_addTestcases<Fix16>();
+  test_subTestcases<Fix16>();
+  test_sqrtTestcasesFix16();
+#endif
+
+#if !defined(NO_DOUBLE) && defined(NO_FIX16)
+  test_multTestcases<double>();
+  test_divTestcases<double>();
+  test_addTestcases<double>();
+  test_subTestcases<double>();
+  test_sqrtTestcasesDouble();
+#endif
+
   while (1) {};
 }
 
