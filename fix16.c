@@ -1,6 +1,7 @@
 #include "fix16.h"
+#if !defined(FIXMATH_NO_64BIT)
 #include "int64.h"
-
+#endif
 
 /* Subtraction and addition with overflow detection.
  * The versions without overflow detection are inlined in the header.
