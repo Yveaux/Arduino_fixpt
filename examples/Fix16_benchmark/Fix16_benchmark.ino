@@ -1,18 +1,8 @@
-#define NO_DOUBLE
-#define NO_FIX16
-
-#if !defined(NO_DOUBLE) && !defined(NO_FIX16)
 #include <stdio.h>
-#endif
-
-#ifndef NO_FIX16
 #include <fix16.h>
-#endif
-#ifndef NO_DOUBLE
 #include <math.h>
-#endif
 
-#define NUM_RUNS   (5)
+#define NUM_RUNS   (10)
 
 #define COMMENT(x) Serial.println(F("\n----" x "----"));
 
@@ -81,7 +71,7 @@ template<typename T> void test_divTestcases( void )
       T a = testcases[i];
       T b = testcases[j];
       // We don't require a solution for /0 :)
-      if (b == T(0)) continue;
+      if (b == T((int16_t)0)) continue;
       f = a / b;
     }
   }
@@ -115,20 +105,17 @@ template<typename T> void test_subTestcases( void )
   }
 }
 
-#ifndef NO_FIX16
 void test_sqrtTestcasesFix16( void )
 {
   unsigned int i;
   for (i = 0; i < TESTCASES_COUNT; i++)
   {
     Fix16 a = testcases[i];
-    if (a < Fix16(0)) continue;
+    if (a < (int32_t)0) continue;
     f = a.sqrt();
   }
 }
-#endif
 
-#ifndef NO_DOUBLE
 void test_sqrtTestcasesDouble( void )
 {
   unsigned int i;
@@ -139,7 +126,6 @@ void test_sqrtTestcasesDouble( void )
     f = sqrt(a);
   }
 }
-#endif
 
 #define TIMED_EXEC(func,delta,runs)  \
 {                                    \
@@ -151,8 +137,11 @@ void test_sqrtTestcasesDouble( void )
 
 void setup()
 {
-#if !defined(NO_DOUBLE) && !defined(NO_FIX16)
   Serial.begin(115200);
+  while(!Serial.available()){
+    Serial.println("Enter any key to begin");
+    delay(1000);
+  }
 
   COMMENT("Running testcases for multiplication");
   unsigned long time_Fix16Mult, time_doubleMult;
@@ -193,23 +182,6 @@ void setup()
   Serial.print("Sqrt    "); Serial.print(time_doubleSqrt); Serial.print("\t"); Serial.print(time_Fix16Sqrt); Serial.print("\t"); Serial.print(incr_Sqrt); Serial.println("%");
 
   COMMENT("Test finished");
-#endif
-
-#if defined(NO_DOUBLE) && !defined(NO_FIX16)
-  test_multTestcases<Fix16>();
-  test_divTestcases<Fix16>();
-  test_addTestcases<Fix16>();
-  test_subTestcases<Fix16>();
-  test_sqrtTestcasesFix16();
-#endif
-
-#if !defined(NO_DOUBLE) && defined(NO_FIX16)
-  test_multTestcases<double>();
-  test_divTestcases<double>();
-  test_addTestcases<double>();
-  test_subTestcases<double>();
-  test_sqrtTestcasesDouble();
-#endif
 
   while (1) {};
 }
