@@ -2,7 +2,7 @@
 #include <fix16.h>
 #include <math.h>
 
-#define NUM_RUNS   (10)
+#define NUM_RUNS   5
 
 #define COMMENT(x) Serial.println(F("\n----" x "----"));
 
