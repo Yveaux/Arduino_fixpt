@@ -7,6 +7,8 @@ See also http://en.wikipedia.org/wiki/Libfixmath.
 
 Works on AVR (Uno, etc) and ARM (Due, etc) based Arduinos.
 
+PS: The examples may not compile, only Fix16_benchmark was tested and fixed from the original repository.
+
 Benchmarks (Fix16_benchmark.ino example)
 ```
 Arduino Due fix16_t vs double Benchmark (time in micro seconds):
